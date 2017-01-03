@@ -29,6 +29,7 @@ class App extends Component {
       <div>
         <input type="text" onChange={this.textBoxChange} value={this.state.newTodoText}></input>
         <button onClick={this.addTodoButton}>Add Todo</button>
+        <ListTodos todos={store.getState().todos}/>
       </div>
     )
   }
@@ -37,11 +38,11 @@ class App extends Component {
 function ListTodos({todos}){
   return (
     <ul>
-    {todos.map(elem => 
-      <li key={elem.id}>
+    {Object.keys(todos).map(elem => 
+      <li key={todos[elem]['id']}>
         <input type="checkbox" />
         &nbsp;
-        {elem.text}
+        {todos[elem]['text']}
       </li>
     )}
     </ul>
@@ -88,6 +89,3 @@ function render(){
   );
 }
 render();
-store.dispatch({type: 'ADD_TODO', id: 5, text: 'my text', isChecked: false});
-store.dispatch({type: 'ADD_TODO', id: 4, text: 'my text', isChecked: false});
-store.getState();
