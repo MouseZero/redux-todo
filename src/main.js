@@ -13,6 +13,13 @@ function ShowTodos({todos}){
   return (
     <div>
       Hello There
+      {todos.reduce((prev, elem) => {
+        return [...prev, (
+          <div>
+            Element
+          </div>
+        )]
+      }, [])}
     </div>
   );
 }
