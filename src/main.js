@@ -9,10 +9,15 @@ class App extends Component {
     this.state = {newTodoText: ""};
     this.textBoxChange = this.textBoxChange.bind(this);
     this.addTodoButton = this.addTodoButton.bind(this);
+    this.toggleBox = this.toggleBox.bind(this);
   }
 
   textBoxChange(event){
     this.setState({newTodoText: event.target.value});
+  }
+
+  toggleBox(event){
+    console.log('clicked checkbox ' + event.target.name);
   }
 
   addTodoButton(){
@@ -29,18 +34,18 @@ class App extends Component {
       <div>
         <input type="text" onChange={this.textBoxChange} value={this.state.newTodoText}></input>
         <button onClick={this.addTodoButton}>Add Todo</button>
-        <ListTodos todos={store.getState().todos}/>
+        <ListTodos todos={store.getState().todos} toggleBox={this.toggleBox}/>
       </div>
     )
   }
 }
 
-function ListTodos({todos}){
+function ListTodos({todos, toggleBox}){
   return (
     <ul>
-    {Object.keys(todos).map(elem => 
-      <li key={todos[elem]['id']}>
-        <input type="checkbox" />
+    {Object.keys(todos).map( (elem, index) => 
+      <li key={index}>
+        <input type="checkbox" name={elem} onClick={toggleBox}/>
         &nbsp;
         {todos[elem]['text']}
       </li>
