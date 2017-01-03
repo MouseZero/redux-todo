@@ -49,13 +49,6 @@ function ListTodos({todos}){
   )
 }
 
-function ShowTodos({todos}){ console.log(todos);
-  return (
-    <div>
-    </div>
-  );
-}
-
 //----Redux
 let counter = 0;
 //- Reducer{}
