@@ -29,16 +29,22 @@ class App extends Component {
       <div>
         <input type="text" onChange={this.textBoxChange} value={this.state.newTodoText}></input>
         <button onClick={this.addTodoButton}>Add Todo</button>
-        <ul>
-        {this.props.todos.map(elem => 
-          <li key={elem.id}>
-            {elem.text}
-          </li>
-        )}
-        </ul>
+        <ListTodos todos={this.props.todos}/>
       </div>
     )
   }
+}
+
+function ListTodos({todos}){
+  return (
+    <ul>
+    {todos.map(elem => 
+      <li key={elem.id}>
+        {elem.text}
+      </li>
+    )}
+    </ul>
+  )
 }
 
 function ShowTodos({todos}){ console.log(todos);
