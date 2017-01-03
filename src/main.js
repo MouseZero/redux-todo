@@ -40,6 +40,8 @@ function ListTodos({todos}){
     <ul>
     {todos.map(elem => 
       <li key={elem.id}>
+        <input type="checkbox" value={elem.id}/>
+        &nbsp;
         {elem.text}
       </li>
     )}
