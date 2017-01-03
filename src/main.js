@@ -2,7 +2,7 @@
 
 const Component = React.Component;
 
-class TodoInputs extends Component {
+class App extends Component {
   constructor(props){
     super(props)
     console.log('started');
@@ -29,23 +29,21 @@ class TodoInputs extends Component {
       <div>
         <input type="text" onChange={this.textBoxChange} value={this.state.newTodoText}></input>
         <button onClick={this.addTodoButton}>Add Todo</button>
+        <ul>
+        {this.props.todos.map(elem => 
+          <li key={elem.id}>
+            {elem.text}
+          </li>
+        )}
+        </ul>
       </div>
     )
   }
 }
 
-
-function ShowTodos({todos}){
-  console.log(todos);
+function ShowTodos({todos}){ console.log(todos);
   return (
     <div>
-      <ul>
-      {todos.map(elem => 
-        <li key={elem.id}>
-          {elem.text}
-        </li>
-      )}
-      </ul>
     </div>
   );
 }
@@ -77,10 +75,7 @@ store.subscribe(render);
 //-----Render
 function render(){
   ReactDOM.render(
-    <div>
-      <TodoInputs/>
-      <ShowTodos todos={store.getState().todos}/>
-    </div>,
+    <App todos={store.getState().todos}/>,
     document.getElementById('root')
   );
 }
