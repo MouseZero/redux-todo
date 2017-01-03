@@ -1,33 +1,51 @@
 //----React
-function addTodoButton(){
-  store.dispatch({
-    type: 'ADD_TODO',
-    id: counter++,
-    text: 'my message',
-    isChecked: false
-  });
+
+const Component = React.Component;
+
+class TodoInputs extends Component {
+  constructor(props){
+    super(props)
+    console.log('started');
+    this.state = {newTodoText: ""};
+    this.textBoxChange = this.textBoxChange.bind(this);
+    this.addTodoButton = this.addTodoButton.bind(this);
+  }
+
+  textBoxChange(event){
+    this.setState({newTodoText: event.target.value});
+  }
+
+  addTodoButton(){
+    store.dispatch({
+      type: 'ADD_TODO',
+      id: counter++,
+      text: this.state.newTodoText,
+      isChecked: false
+    });
+  }
+
+  render(){
+    return(
+      <div>
+        <input type="text" onChange={this.textBoxChange} value={this.state.newTodoText}></input>
+        <button onClick={this.addTodoButton}>Add Todo</button>
+      </div>
+    )
+  }
 }
+
 
 function ShowTodos({todos}){
   console.log(todos);
   return (
     <div>
-      Hello There
-      {todos.reduce((prev, elem) => {
-        return [...prev, (
-          <div>
-            Element
-          </div>
-        )]
-      }, [])}
-    </div>
-  );
-}
-
-function Buttons(){
-  return(
-    <div>
-      <button onClick={addTodoButton}>Add Todo</button>
+      <ul>
+      {todos.map(elem => 
+        <li key={elem.id}>
+          {elem.text}
+        </li>
+      )}
+      </ul>
     </div>
   );
 }
@@ -60,8 +78,8 @@ store.subscribe(render);
 function render(){
   ReactDOM.render(
     <div>
+      <TodoInputs/>
       <ShowTodos todos={store.getState().todos}/>
-      <Buttons/>
     </div>,
     document.getElementById('root')
   );
