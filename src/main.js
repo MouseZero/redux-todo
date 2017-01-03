@@ -29,7 +29,6 @@ class App extends Component {
       <div>
         <input type="text" onChange={this.textBoxChange} value={this.state.newTodoText}></input>
         <button onClick={this.addTodoButton}>Add Todo</button>
-        <ListTodos todos={this.props.todos}/>
       </div>
     )
   }
@@ -40,7 +39,7 @@ function ListTodos({todos}){
     <ul>
     {todos.map(elem => 
       <li key={elem.id}>
-        <input type="checkbox" value={elem.id}/>
+        <input type="checkbox" />
         &nbsp;
         {elem.text}
       </li>
@@ -58,19 +57,20 @@ function ShowTodos({todos}){ console.log(todos);
 
 //----Redux
 let counter = 0;
-//- Reducer
-function reducer(state = {todos: []}, action){
+//- Reducer{}
+function reducer(state = {todos: {}}, action){
   const {id, text, isChecked} = action
   switch(action.type){
     case 'ADD_TODO':
+      console.log(id, text, isChecked)
       return Object.assign(
         {}, 
         state, 
-        {
-          todos: [...state.todos, {
-            id, text, isChecked
-          }]
-        }
+        {todos: Object.assign(
+          {},
+          state.todos,
+          {[id]: {text, isChecked}}
+        )}
       );
     default:
       return state
@@ -88,3 +88,6 @@ function render(){
   );
 }
 render();
+store.dispatch({type: 'ADD_TODO', id: 5, text: 'my text', isChecked: false});
+store.dispatch({type: 'ADD_TODO', id: 4, text: 'my text', isChecked: false});
+store.getState();
