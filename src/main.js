@@ -18,6 +18,12 @@ class App extends Component {
 
   toggleBox(event){
     console.log('clicked checkbox ' + event.target.name);
+    console.log(store.getState().todos)
+    store.dispatch({
+      type: 'TOGGLE_BOX',
+      id: event.target.name,
+      isChecked: true
+    })
   }
 
   addTodoButton(){
@@ -40,12 +46,17 @@ class App extends Component {
   }
 }
 
+
 function ListTodos({todos, toggleBox}){
+  function isDone(todo){
+    console.log(todo.isChecked);
+    return ""
+  }
   return (
     <ul>
     {Object.keys(todos).map( (elem, index) => 
       <li key={index}>
-        <input type="checkbox" name={elem} onClick={toggleBox}/>
+        <input type="checkbox" checked={todos[elem]['isChecked']} onChange={toggleBox} name={elem}/>
         &nbsp;
         {todos[elem]['text']}
       </li>
@@ -61,7 +72,6 @@ function reducer(state = {todos: {}}, action){
   const {id, text, isChecked} = action
   switch(action.type){
     case 'ADD_TODO':
-      console.log(id, text, isChecked)
       return Object.assign(
         {}, 
         state, 
@@ -71,6 +81,18 @@ function reducer(state = {todos: {}}, action){
           {[id]: {text, isChecked}}
         )}
       );
+      case 'TOGGLE_BOX':
+        return Object.assign(
+          {},
+          state,
+          {todos: Object.assign(
+            {},
+            state.todos,
+            {
+              [id]: {text: state.todos[id].text, isChecked}
+            }
+          )}
+        )
     default:
       return state
   }
