@@ -17,12 +17,12 @@ class App extends Component {
   }
 
   toggleBox(event){
-    console.log('clicked checkbox ' + event.target.name);
-    console.log(store.getState().todos)
+    const oldState = store.getState().todos[event.target.name].isChecked;
+    console.log(oldState);
     store.dispatch({
       type: 'TOGGLE_BOX',
       id: event.target.name,
-      isChecked: true
+      isChecked: !oldState
     })
   }
 
