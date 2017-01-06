@@ -1,5 +1,8 @@
-//----React
+const FILTER_DONE = 'FILTER_DONE';
+const FILTER_ALL = 'FILTER_ALL';
+const FILTER_ACTIVE = 'FILTER_ACTIVE';
 
+//----React
 const Component = React.Component;
 
 class App extends Component {
@@ -93,8 +96,10 @@ function reducer(state = {todos: {}}, action){
             }
           )}
         )
-    default:
-      return state
+      case 'FILTER_TODOS':
+        return Object.assign({}, state, {test: 'called Filter_TODOS'});
+      default:
+        return state
   }
 }
 
