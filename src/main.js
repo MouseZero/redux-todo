@@ -30,6 +30,7 @@ class App extends Component {
 
   changeFilter(key){
     console.log('pressed filter button with ' + key);
+    store.dispatch({type: 'FILTER_TODOS', filter: FILTERS[key]});
   }
 
   addTodoButton(){
@@ -88,7 +89,7 @@ function FilterButtons ({ filters, changeFilter }){
 let counter = 0;
 //- Reducer{}
 function reducer(state = {todos: {}}, action){
-  const {id, text, isChecked} = action
+  const {id, text, isChecked, filter} = action
   switch(action.type){
     case 'ADD_TODO':
       return Object.assign(
@@ -113,7 +114,7 @@ function reducer(state = {todos: {}}, action){
           )}
         )
       case 'FILTER_TODOS':
-        return Object.assign({}, state, {test: 'called Filter_TODOS'});
+        return Object.assign({}, state, {filter});
       default:
         return state
   }
