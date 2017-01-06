@@ -1,4 +1,4 @@
-const FILTERS = ['Done', 'All', 'Active'];
+const FILTERS = ['All', 'Active', 'Done'];
 
 //----React
 const Component = React.Component;
@@ -29,7 +29,6 @@ class App extends Component {
   }
 
   changeFilter(key){
-    console.log('pressed filter button with ' + key);
     store.dispatch({type: 'FILTER_TODOS', filter: FILTERS[key]});
   }
 
@@ -48,7 +47,7 @@ class App extends Component {
         <input type="text" onChange={this.textBoxChange} value={this.state.newTodoText}></input>
         <button onClick={this.addTodoButton}>Add Todo</button>
         <ListTodos todos={store.getState().todos} toggleBox={this.toggleBox}/>
-        <FilterButtons filters={FILTERS} changeFilter={this.changeFilter}/>
+        <FilterButtons filters={FILTERS} changeFilter={this.changeFilter} filterId={FILTERS.indexOf(store.getState().filter)}/>
       </div>
     )
   }
@@ -73,12 +72,14 @@ function ListTodos({todos, toggleBox}){
   )
 }
 
-function FilterButtons ({ filters, changeFilter }){
+function FilterButtons ({ filters, changeFilter, filterId }){
   return (
     <div>
       {filters.map( (elem, index) =>
           <button key={index} onClick={changeFilter.bind(this, index)}>
+            {(index === filterId) && "--"}
             {elem}
+            {(index === filterId) && "--"}
           </button>
       )}
     </div>
