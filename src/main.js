@@ -10,6 +10,7 @@ class App extends Component {
     this.state = {newTodoText: ""};
     this.textBoxChange = this.textBoxChange.bind(this);
     this.addTodoButton = this.addTodoButton.bind(this);
+    this.changeFilter = this.changeFilter.bind(this);
     this.toggleBox = this.toggleBox.bind(this);
   }
 
@@ -27,6 +28,10 @@ class App extends Component {
     })
   }
 
+  changeFilter(key){
+    console.log('pressed filter button with ' + key);
+  }
+
   addTodoButton(){
     store.dispatch({
       type: 'ADD_TODO',
@@ -42,7 +47,7 @@ class App extends Component {
         <input type="text" onChange={this.textBoxChange} value={this.state.newTodoText}></input>
         <button onClick={this.addTodoButton}>Add Todo</button>
         <ListTodos todos={store.getState().todos} toggleBox={this.toggleBox}/>
-        <FilterButtons filters={FILTERS}/>
+        <FilterButtons filters={FILTERS} changeFilter={this.changeFilter}/>
       </div>
     )
   }
@@ -67,16 +72,14 @@ function ListTodos({todos, toggleBox}){
   )
 }
 
-function FilterButtons ({ filters }){
+function FilterButtons ({ filters, changeFilter }){
   return (
     <div>
-      {filters.map( elem => {
-        return (
-          <button>
+      {filters.map( (elem, index) =>
+          <button key={index} onClick={changeFilter.bind(this, index)}>
             {elem}
           </button>
-        )
-      } )}
+      )}
     </div>
   )
 }
