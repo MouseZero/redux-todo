@@ -1,6 +1,4 @@
-const FILTER_DONE = 'FILTER_DONE';
-const FILTER_ALL = 'FILTER_ALL';
-const FILTER_ACTIVE = 'FILTER_ACTIVE';
+const FILTERS = ['Done', 'All', 'Active'];
 
 //----React
 const Component = React.Component;
@@ -44,6 +42,7 @@ class App extends Component {
         <input type="text" onChange={this.textBoxChange} value={this.state.newTodoText}></input>
         <button onClick={this.addTodoButton}>Add Todo</button>
         <ListTodos todos={store.getState().todos} toggleBox={this.toggleBox}/>
+        <FilterButtons filters={FILTERS}/>
       </div>
     )
   }
@@ -65,6 +64,20 @@ function ListTodos({todos, toggleBox}){
       </li>
     )}
     </ul>
+  )
+}
+
+function FilterButtons ({ filters }){
+  return (
+    <div>
+      {filters.map( elem => {
+        return (
+          <button>
+            {elem}
+          </button>
+        )
+      } )}
+    </div>
   )
 }
 
