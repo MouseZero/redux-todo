@@ -46,11 +46,40 @@ class App extends Component {
       <div>
         <input type="text" onChange={this.textBoxChange} value={this.state.newTodoText}></input>
         <button onClick={this.addTodoButton}>Add Todo</button>
-        <ListTodos todos={store.getState().todos} toggleBox={this.toggleBox}/>
+        <ListTodos todos={ visableTodos(store.getState().todos, store.getState().filter) } toggleBox={this.toggleBox}/>
         <FilterButtons filters={FILTERS} changeFilter={this.changeFilter} filterId={FILTERS.indexOf(store.getState().filter)}/>
       </div>
     )
   }
+}
+
+function visableTodos(todos, filter){
+  console.log(todos);
+  switch(filter){
+    case 'Active':
+      const newTodosActive = Object.keys(todos).reduce((prev, key) => {
+        if(todos[key].isChecked){
+          return prev
+        } else {
+          return Object.assign({}, prev, {[key]: todos[key]})
+        }
+      }
+      , {})
+      return newTodosActive;
+    case 'Done':
+      const newTodosDone = Object.keys(todos).reduce((prev, key) => {
+        if(!todos[key].isChecked){
+          return prev
+        } else {
+          return Object.assign({}, prev, {[key]: todos[key]})
+        }
+      }
+      , {})
+      return newTodosDone;
+    default:
+      return todos;
+  }
+  return todos;
 }
 
 
@@ -89,7 +118,7 @@ function FilterButtons ({ filters, changeFilter, filterId }){
 //----Redux
 let counter = 0;
 //- Reducer{}
-function reducer(state = {todos: {}}, action){
+function reducer(state = {todos: {}, filter: FILTERS[0]}, action){
   const {id, text, isChecked, filter} = action
   switch(action.type){
     case 'ADD_TODO':
