@@ -6,7 +6,6 @@ const Component = React.Component;
 class App extends Component {
   constructor(props){
     super(props)
-    this.state = {newTodoText: ""};
     this.textBoxChange = this.textBoxChange.bind(this);
     this.addTodoButton = this.addTodoButton.bind(this);
     this.changeFilter = this.changeFilter.bind(this);
@@ -14,7 +13,7 @@ class App extends Component {
   }
 
   textBoxChange(event){
-    this.setState({newTodoText: event.target.value});
+    store.dispatch({type: 'CHANGE_TODO_INPUT_TEXT', text: event.target.value});
   }
 
   toggleBox(event){
@@ -34,7 +33,7 @@ class App extends Component {
     store.dispatch({
       type: 'ADD_TODO',
       id: counter++,
-      text: this.state.newTodoText,
+      text: store.getState().inputBox,
       isChecked: false
     });
   }
@@ -42,7 +41,7 @@ class App extends Component {
   render(){
     return(
       <div>
-        <input type="text" onChange={this.textBoxChange} value={this.state.newTodoText}></input>
+        <input type="text" onChange={this.textBoxChange} value={store.getState().inputBox}></input>
         <button onClick={this.addTodoButton}>Add Todo</button>
         <ListTodos todos={ visableTodos(store.getState().todos, store.getState().filter) } toggleBox={this.toggleBox}/>
         <FilterButtons filters={FILTERS} changeFilter={this.changeFilter} filterId={FILTERS.indexOf(store.getState().filter)}/>
@@ -125,7 +124,7 @@ function FilterButton ({ index, callback, isActive, text }){
 //----Redux
 let counter = 0;
 //- Reducer{}
-function reducer(state = {todos: {}, filter: FILTERS[0]}, action){
+function reducer(state = {todos: {}, filter: FILTERS[0], inputBox: ""}, action){
   const {id, text, isChecked, filter} = action
   switch(action.type){
     case 'ADD_TODO':
@@ -150,6 +149,13 @@ function reducer(state = {todos: {}, filter: FILTERS[0]}, action){
             }
           )}
         )
+      case 'CHANGE_TODO_INPUT_TEXT':
+        return Object.assign(
+          {},
+          state,
+          {inputBox: text}
+        )
+        return state;
       case 'FILTER_TODOS':
         return Object.assign({}, state, {filter});
       default:
