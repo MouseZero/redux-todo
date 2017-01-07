@@ -58,21 +58,16 @@ function visableTodos(todos, filter){
   switch(filter){
     case 'Active':
       const newTodosActive = Object.keys(todos).reduce((prev, key) => {
-        if(todos[key].isChecked){
-          return prev
-        } else {
-          return Object.assign({}, prev, {[key]: todos[key]})
-        }
+      const item = (todos[key].isChecked) ? {} : {[key]: todos[key]};
+      console.log(item);
+      return Object.assign({}, prev, item);
       }
       , {})
       return newTodosActive;
     case 'Done':
       const newTodosDone = Object.keys(todos).reduce((prev, key) => {
-        if(!todos[key].isChecked){
-          return prev
-        } else {
-          return Object.assign({}, prev, {[key]: todos[key]})
-        }
+      const item = (!todos[key].isChecked) ? {} : {[key]: todos[key]};
+      return Object.assign({}, prev, item);
       }
       , {})
       return newTodosDone;
