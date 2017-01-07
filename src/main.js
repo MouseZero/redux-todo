@@ -1,53 +1,41 @@
 const FILTERS = ['All', 'Active', 'Done'];
 
 //----React
-const Component = React.Component;
+function textBoxChange(event){
+  store.dispatch({type: 'CHANGE_TODO_INPUT_TEXT', text: event.target.value});
+}
 
-class App extends Component {
-  constructor(props){
-    super(props)
-    this.textBoxChange = this.textBoxChange.bind(this);
-    this.addTodoButton = this.addTodoButton.bind(this);
-    this.changeFilter = this.changeFilter.bind(this);
-    this.toggleBox = this.toggleBox.bind(this);
-  }
+function toggleBox(event){
+  const oldState = store.getState().todos[event.target.name].isChecked;
+  store.dispatch({
+    type: 'TOGGLE_BOX',
+    id: event.target.name,
+    isChecked: !oldState
+  })
+}
 
-  textBoxChange(event){
-    store.dispatch({type: 'CHANGE_TODO_INPUT_TEXT', text: event.target.value});
-  }
+function changeFilter(key){
+  store.dispatch({type: 'FILTER_TODOS', filter: FILTERS[key]});
+}
 
-  toggleBox(event){
-    const oldState = store.getState().todos[event.target.name].isChecked;
-    store.dispatch({
-      type: 'TOGGLE_BOX',
-      id: event.target.name,
-      isChecked: !oldState
-    })
-  }
+function addTodoButton(){
+  store.dispatch({
+    type: 'ADD_TODO',
+    id: counter++,
+    text: store.getState().inputBox,
+    isChecked: false
+  });
+}
 
-  changeFilter(key){
-    store.dispatch({type: 'FILTER_TODOS', filter: FILTERS[key]});
-  }
-
-  addTodoButton(){
-    store.dispatch({
-      type: 'ADD_TODO',
-      id: counter++,
-      text: store.getState().inputBox,
-      isChecked: false
-    });
-  }
-
-  render(){
-    return(
-      <div>
-        <input type="text" onChange={this.textBoxChange} value={store.getState().inputBox}></input>
-        <button onClick={this.addTodoButton}>Add Todo</button>
-        <ListTodos todos={ visableTodos(store.getState().todos, store.getState().filter) } toggleBox={this.toggleBox}/>
-        <FilterButtons filters={FILTERS} changeFilter={this.changeFilter} filterId={FILTERS.indexOf(store.getState().filter)}/>
-      </div>
-    )
-  }
+function App(){
+  return(
+    <div>
+      <input type="text" onChange={textBoxChange} value={store.getState().inputBox}></input>
+      <button onClick={addTodoButton}>Add Todo</button>
+      <ListTodos todos={ visableTodos(store.getState().todos, store.getState().filter) } toggleBox={toggleBox}/>
+      <FilterButtons filters={FILTERS} changeFilter={changeFilter} filterId={FILTERS.indexOf(store.getState().filter)}/>
+    </div>
+  )
 }
 
 function visableTodos(todos, filter){
