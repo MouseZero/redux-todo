@@ -6,7 +6,6 @@ const Component = React.Component;
 class App extends Component {
   constructor(props){
     super(props)
-    console.log('started');
     this.state = {newTodoText: ""};
     this.textBoxChange = this.textBoxChange.bind(this);
     this.addTodoButton = this.addTodoButton.bind(this);
@@ -20,7 +19,6 @@ class App extends Component {
 
   toggleBox(event){
     const oldState = store.getState().todos[event.target.name].isChecked;
-    console.log(oldState);
     store.dispatch({
       type: 'TOGGLE_BOX',
       id: event.target.name,
@@ -54,12 +52,10 @@ class App extends Component {
 }
 
 function visableTodos(todos, filter){
-  console.log(todos);
   switch(filter){
     case 'Active':
       return Object.keys(todos).reduce((prev, key) => {
         const item = (todos[key].isChecked) ? {} : {[key]: todos[key]};
-        console.log(item);
       return Object.assign({}, prev, item);
       }
       , {});
@@ -78,7 +74,6 @@ function visableTodos(todos, filter){
 
 function ListTodos({todos, toggleBox}){
   function isDone(todo){
-    console.log(todo.isChecked);
     return ""
   }
   return (
