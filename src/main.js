@@ -79,18 +79,25 @@ function ListTodos({todos, toggleBox}){
   return (
     <ul>
     {Object.keys(todos).map( (tKey, index) => 
-      <TodoDisplay key={index} index={index} tKey={tKey} toggleBox={toggleBox} todos={todos} />
+      <TodoDisplay 
+        key={index} 
+        index={index} 
+        tKey={tKey} 
+        callback={toggleBox} 
+        isChecked={todos[tKey]['isChecked']} 
+        text={todos[tKey]['text']}
+      />
     )}
     </ul>
   )
 }
 
-function TodoDisplay({ index, tKey, toggleBox, todos}){
+function TodoDisplay({ index, tKey, callback, isChecked, text}){
   return (
     <li key={index}>
-      <input type="checkbox" checked={todos[tKey]['isChecked']} onChange={toggleBox} name={tKey}/>
+      <input type="checkbox" checked={isChecked} onChange={callback} name={tKey}/>
       &nbsp;
-      {todos[tKey]['text']}
+      {text}
     </li>
   )
 }
