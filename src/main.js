@@ -93,13 +93,19 @@ function FilterButtons ({ filters, changeFilter, filterId }){
   return (
     <div>
       {filters.map( (elem, index) =>
-          <button key={index} onClick={changeFilter.bind(this, index)}>
-            {(index === filterId) && "--"}
-            {elem}
-            {(index === filterId) && "--"}
-          </button>
+        <FilterButton key={index} index={index} callback={changeFilter} elem={elem} filterId={filterId}/>
       )}
     </div>
+  )
+}
+
+function FilterButton ({ index, callback, filterId, elem }){
+  return (
+    <button onClick={callback.bind(this, index)}>
+      {(index === filterId) && "--"}
+      {elem}
+      {(index === filterId) && "--"}
+    </button>
   )
 }
 
