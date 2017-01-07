@@ -27,13 +27,17 @@ function addTodoButton(){
   });
 }
 
-function App(){
+function App({ inputBoxText, todos, filter }){
   return(
     <div>
-      <input type="text" onChange={textBoxChange} value={store.getState().inputBox}></input>
+      <input type="text" onChange={textBoxChange} value={inputBoxText}></input>
       <button onClick={addTodoButton}>Add Todo</button>
-      <ListTodos todos={ visableTodos(store.getState().todos, store.getState().filter) } toggleBox={toggleBox}/>
-      <FilterButtons filters={FILTERS} changeFilter={changeFilter} filterId={FILTERS.indexOf(store.getState().filter)}/>
+      <ListTodos todos={ visableTodos(todos, filter) } toggleBox={toggleBox}/>
+      <FilterButtons 
+        filters={FILTERS}
+        changeFilter={changeFilter} 
+        filterId={FILTERS.indexOf(filter)}
+      />
     </div>
   )
 }
@@ -93,7 +97,13 @@ function FilterButtons ({ filters, changeFilter, filterId }){
   return (
     <div>
       {filters.map( (elem, index) =>
-        <FilterButton key={index} index={index} callback={changeFilter} text={elem} isActive={index === filterId}/>
+        <FilterButton 
+          key={index}
+          index={index} 
+          callback={changeFilter} 
+          text={elem} 
+          isActive={index === filterId}
+        />
       )}
     </div>
   )
@@ -157,7 +167,11 @@ store.subscribe(render);
 //-----Render
 function render(){
   ReactDOM.render(
-    <App todos={store.getState().todos}/>,
+    <App 
+      todos={store.getState().todos}
+      inputBoxText={store.getState().inputBox}
+      filter={store.getState().filter}
+    />,
     document.getElementById('root')
   );
 }
