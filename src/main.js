@@ -21,7 +21,6 @@ function changeFilter(key){
 function addTodoButton(){
   store.dispatch({
     type: 'ADD_TODO',
-    id: counter++,
     text: store.getState().inputBox,
     isChecked: false
   });
@@ -45,19 +44,9 @@ function App({ inputBoxText, todos, filter }){
 function visableTodos(todos, filter){
   switch(filter){
     case 'Active':
-      return Object.keys(todos).reduce((prev, key) => {
-        const item = (todos[key].isChecked) ? {} : {[key]: todos[key]};
-      return Object.assign({}, prev, item);
-      }
-      , {});
+      return todos.filter(todo => todo.isChecked);
     case 'Done':
-      return Object.keys(todos).reduce((prev, key) => {
-        const item = (!todos[key].isChecked) ? {} : {[key]: todos[key]};
-        return Object.assign({}, prev, item);
-      }
-      , {});
-    default:
-      return todos;
+      return todos.filter(todo => !todo.isChecked);
   }
   return todos;
 }
@@ -120,7 +109,6 @@ function FilterButton ({ index, callback, isActive, text }){
 }
 
 //----Redux
-let counter = 0;
 //- Reducer{}
 function inputBoxReducer(state = "", action){
   switch(action.type){
@@ -138,21 +126,20 @@ function filterReducer(state = FILTERS[0], action){
   return state;
 }
 
-function todosReducer(state = {}, action){
+function todosReducer(state = [], action){
   const {id, text, isChecked} = action;
   switch(action.type){
     case 'ADD_TODO':
-      return Object.assign(
-        {},
-        state,
-        {[id]: {text, isChecked}}
-      );
+      return [
+        ...state,
+        {text, isChecked}
+      ]
     case 'TOGGLE_BOX':
-      return Object.assign(
-        {},
-        state,
-        {[id]: {text: state[id].text, isChecked}}
-      )
+      return [
+        ...state.slice(0, id),
+        {text: state[id].text, isChecked},
+        ...state.slice(id + 1)
+      ]
   }
   return state;
 }
