@@ -86,7 +86,7 @@ class FilterButtons extends Component {
   }
 
   render(){
-    const state = store.getState();
+    const state = store.getState().filter;
     const { DisplayComponent } = this.props;
 
     return (
@@ -100,7 +100,7 @@ class FilterButtons extends Component {
               })
             }
             text={elem}
-            isActive={state.filter === allTags[index]}
+            isActive={state === allTags[index]}
           />
         )}
       </div>
