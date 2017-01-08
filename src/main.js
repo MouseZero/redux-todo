@@ -37,7 +37,7 @@ function App({ inputBoxText, todos, filter }){
   return(
     <div>
       <input type="text" onChange={textBoxChange} value={inputBoxText}></input>
-      <button onClick={addTodoButton}>Add Todo</button>
+      <GeneralButton callback={addTodoButton} text="Add Todo" />
       <ListTodos todos={ visableTodos(todos, filter) } toggleBox={toggleBox}/>
       <FilterButtons
         filters={FILTERS}
