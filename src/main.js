@@ -53,29 +53,25 @@ function visableTodos(todos, filter){
 
 
 function ListTodos({todos, toggleBox}){
-  function isDone(todo){
-    return ""
-  }
   return (
     <ul>
-    {Object.keys(todos).map( (tKey, index) => 
-      <TodoDisplay 
+    {todos.map((todo, index) => 
+      <TodoDisplay
         key={index} 
         index={index} 
-        tKey={tKey} 
         callback={toggleBox} 
-        isChecked={todos[tKey]['isChecked']} 
-        text={todos[tKey]['text']}
+        isChecked={todo.isChecked} 
+        text={todo.text}
       />
     )}
     </ul>
   )
 }
 
-function TodoDisplay({ index, tKey, callback, isChecked, text}){
+function TodoDisplay({ index, callback, isChecked, text}){
   return (
-    <li key={index}>
-      <input type="checkbox" checked={isChecked} onChange={callback} name={tKey}/>
+    <li>
+      <input type="checkbox" checked={isChecked} onChange={callback} name={index}/>
       &nbsp;
       {text}
     </li>
