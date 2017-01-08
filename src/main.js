@@ -1,5 +1,6 @@
 const FILTERS = ['All', 'Active', 'Done'];
 const store = Redux.createStore(reducer)
+const Component = React.Component;
 store.subscribe(render);
 
 //----React
@@ -88,10 +89,9 @@ function FilterButtons ({ filters, changeFilter, filterId }){
   return (
     <div>
       {filters.map( (elem, index) =>
-        <FilterButton
+        <GeneralButton
           key={index}
-          index={index}
-          callback={changeFilter}
+          callback={() => changeFilter(index)}
           text={elem}
           isActive={index === filterId}
         />
@@ -100,9 +100,9 @@ function FilterButtons ({ filters, changeFilter, filterId }){
   )
 }
 
-function FilterButton ({ index, callback, isActive, text }){
+function GeneralButton ({isActive, callback, text}){
   return (
-    <button onClick={callback.bind(this, index)}>
+    <button onClick={callback}>
       {(isActive) && "--"}
       {text}
       {(isActive) && "--"}
