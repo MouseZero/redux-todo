@@ -24,14 +24,14 @@ function changeFilterRaw(store, key){
 }
 const changeFilter = R.curry(changeFilterRaw)(store);
 
-function addTodoButton(store, _){
+function addTodoButtonRaw(store){
   store.dispatch({
     type: 'ADD_TODO',
     text: store.getState().inputBox,
     isChecked: false
   });
 }
-const addTodoButton = R.curry(addTodoButton)(store)
+const addTodoButton = function() { return addTodoButtonRaw(store) }
 
 function App({ inputBoxText, todos, filter }){
   return(
