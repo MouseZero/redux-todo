@@ -24,7 +24,6 @@ function changeFilterRaw(store, key){
 const changeFilter = R.curry(changeFilterRaw)(store);
 
 function addTodoButton(store, _){
-  console.log('called add');
   store.dispatch({
     type: 'ADD_TODO',
     text: store.getState().inputBox,
@@ -150,7 +149,6 @@ function todosReducer(state = [], action){
 const oldcombined = Redux.combineReducers;
 
 Redux.combineReducers = function(object){
-  console.log("trying to call reduces " + object);
   return oldcombined(object);
 }
 
