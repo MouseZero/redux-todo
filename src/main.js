@@ -78,7 +78,7 @@ function TodoDisplay({ index, callback, isChecked, text}){
 
 class VisableTodos extends Component {
   componentDidMount(){
-    this.unsubscribe = store.subscribe(() => this.forceUpdate);
+    this.unsubscribe = store.subscribe(() => this.forceUpdate());
   }
 
   componentWillUnmount(){
@@ -87,6 +87,7 @@ class VisableTodos extends Component {
 
   render(){
     const state = store.getState()
+    console.log(state);
     return(
       <ListTodos todos={ visableTodos(state.todos, state.filter) } toggleBox={toggleBox}/>
     )
