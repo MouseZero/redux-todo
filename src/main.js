@@ -131,10 +131,29 @@ function inputBoxReducer(state = "", action){
 }
 
 function filterReducer(state = FILTERS[0], action){
+  switch(action.type){
+    case 'FILTER_TODOS':
+      return action.filter;
+  }
   return state;
 }
 
 function todosReducer(state = {}, action){
+  const {id, text, isChecked} = action;
+  switch(action.type){
+    case 'ADD_TODO':
+      return Object.assign(
+        {},
+        state,
+        {[id]: {text, isChecked}}
+      );
+    case 'TOGGLE_BOX':
+      return Object.assign(
+        {},
+        state,
+        {[id]: {text: state[id].text, isChecked}}
+      )
+  }
   return state;
 }
 
@@ -150,45 +169,6 @@ function reducer(state = {}, action){
     todos: todosReducer(state.todos, action),
     inputBox: inputBoxReducer(state.inputBox, action),
     filter: filterReducer(state.filter, action)
-  }
-}
-
-function oldReducer(state = {todos: {}, filter: FILTERS[0], inputBox: ""}, action){
-  const {id, text, isChecked, filter} = action
-  switch(action.type){
-    case 'ADD_TODO':
-      return Object.assign(
-        {}, 
-        state, 
-        {todos: Object.assign(
-          {},
-          state.todos,
-          {[id]: {text, isChecked}}
-        )}
-      );
-      case 'TOGGLE_BOX':
-        return Object.assign(
-          {},
-          state,
-          {todos: Object.assign(
-            {},
-            state.todos,
-            {
-              [id]: {text: state.todos[id].text, isChecked}
-            }
-          )}
-        )
-      case 'CHANGE_TODO_INPUT_TEXT':
-        return Object.assign(
-          {},
-          state,
-          {inputBox: text}
-        )
-        return state;
-      case 'FILTER_TODOS':
-        return Object.assign({}, state, {filter});
-      default:
-        return state
   }
 }
 
