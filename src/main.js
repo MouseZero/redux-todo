@@ -1,11 +1,14 @@
 const FILTERS = ['All', 'Active', 'Done'];
+const store = Redux.createStore(reducer)
+store.subscribe(render);
 
 //----React
-function textBoxChange(event){
+function textBoxChangeEvent(store, event){
   store.dispatch({type: 'CHANGE_TODO_INPUT_TEXT', text: event.target.value});
 }
+const textBoxChange = R.curry(textBoxChangeEvent)(store);
 
-function toggleBox(event){
+function toggleBoxEvent(store, event){
   const oldState = store.getState().todos[event.target.name].isChecked;
   store.dispatch({
     type: 'TOGGLE_BOX',
@@ -13,18 +16,22 @@ function toggleBox(event){
     isChecked: !oldState
   })
 }
+const toggleBox = R.curry(toggleBoxEvent)(store);
 
-function changeFilter(key){
+function changeFilterRaw(store, key){
   store.dispatch({type: 'FILTER_TODOS', filter: FILTERS[key]});
 }
+const changeFilter = R.curry(changeFilterRaw)(store);
 
-function addTodoButton(){
+function addTodoButton(store, _){
+  console.log('called add');
   store.dispatch({
     type: 'ADD_TODO',
     text: store.getState().inputBox,
     isChecked: false
   });
 }
+const addTodoButton = R.curry(addTodoButton)(store)
 
 function App({ inputBoxText, todos, filter }){
   return(
@@ -155,8 +162,6 @@ function reducer(state = {}, action){
   }
 }
 
-const store = Redux.createStore(reducer)
-store.subscribe(render);
 
 //-----Render
 function render(){
