@@ -1,7 +1,7 @@
 const FILTERS = ['All', 'Active', 'Done'];
 const store = Redux.createStore(reducer)
 const Component = React.Component;
-store.subscribe(render);
+//store.subscribe(render);
 
 //----React
 function textBoxChangeEvent(store, event){
@@ -39,15 +39,6 @@ function App({ inputBoxText, todos, filter }){
   )
 }
 
-class VisableTodos extends Component {
-  render(){
-    const state = store.getState()
-    return(
-      <ListTodos todos={ visableTodos(state.todos, state.filter) } toggleBox={toggleBox}/>
-    )
-  }
-}
-
 function visableTodos(todos, filter){
   switch(filter){
     case 'Active':
@@ -83,6 +74,23 @@ function TodoDisplay({ index, callback, isChecked, text}){
       {text}
     </li>
   )
+}
+
+class VisableTodos extends Component {
+  componentDidMount(){
+    this.unsubscribe = store.subscribe(() => this.forceUpdate);
+  }
+
+  componentWillUnmount(){
+    this.unsubscribe();
+  }
+
+  render(){
+    const state = store.getState()
+    return(
+      <ListTodos todos={ visableTodos(state.todos, state.filter) } toggleBox={toggleBox}/>
+    )
+  }
 }
 
 class FilterButtons extends Component {
