@@ -19,11 +19,6 @@ function toggleBoxEvent(store, event){
 }
 const toggleBox = R.curry(toggleBoxEvent)(store);
 
-function changeFilterRaw(store, key){
-  store.dispatch({type: 'FILTER_TODOS', filter: FILTERS[key]});
-}
-const changeFilter = R.curry(changeFilterRaw)(store);
-
 function addTodoButtonRaw(store){
   store.dispatch({
     type: 'ADD_TODO',
@@ -39,11 +34,7 @@ function App({ inputBoxText, todos, filter }){
       <input type="text" onChange={textBoxChange} value={inputBoxText}></input>
       <GeneralButton callback={addTodoButton} text="Add Todo" />
       <ListTodos todos={ visableTodos(todos, filter) } toggleBox={toggleBox}/>
-      <FilterButtons
-        filters={FILTERS}
-        changeFilter={changeFilter}
-        filterId={FILTERS.indexOf(filter)}
-      />
+      <FilterButtons DisplayComponent={GeneralButton}/>
     </div>
   )
 }
@@ -85,19 +76,36 @@ function TodoDisplay({ index, callback, isChecked, text}){
   )
 }
 
-function FilterButtons ({ filters, changeFilter, filterId }){
-  return (
-    <div>
-      {filters.map( (elem, index) =>
-        <GeneralButton
-          key={index}
-          callback={() => changeFilter(index)}
-          text={elem}
-          isActive={index === filterId}
-        />
-      )}
-    </div>
-  )
+class FilterButtons extends Component {
+  componentDidMount(){
+    this.unsubscribe = store.subscribe(() => this.forceUpdate());
+  }
+
+  componentWillUnmount(){
+    this.unsubscribe();
+  }
+
+  render(){
+    const state = store.getState();
+    const { DisplayComponent } = this.props;
+
+    return (
+      <div>
+        {['All', 'Active', 'Done'].map( (elem, index, allTags) =>
+          <DisplayComponent
+            key={index}
+            callback={() => store.dispatch({
+              type: 'FILTER_TODOS',
+              filter: allTags[index]
+              })
+            }
+            text={elem}
+            isActive={state.filter === allTags[index]}
+          />
+        )}
+      </div>
+    )
+  }
 }
 
 function GeneralButton ({isActive, callback, text}){
