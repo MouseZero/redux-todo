@@ -122,7 +122,38 @@ function FilterButton ({ index, callback, isActive, text }){
 //----Redux
 let counter = 0;
 //- Reducer{}
-function reducer(state = {todos: {}, filter: FILTERS[0], inputBox: ""}, action){
+function inputBoxReducer(state = "", action){
+  switch(action.type){
+    case 'CHANGE_TODO_INPUT_TEXT':
+      return action.text;
+  }
+  return action.text;
+}
+
+function filterReducer(state = FILTERS[0], action){
+  return state;
+}
+
+function todosReducer(state = {}, action){
+  return state;
+}
+
+const oldcombined = Redux.combineReducers;
+
+Redux.combineReducers = function(object){
+  console.log("trying to call reduces " + object);
+  return oldcombined(object);
+}
+
+function reducer(state = {}, action){
+  return {
+    todos: todosReducer(state.todos, action),
+    inputBox: inputBoxReducer(state.inputBox, action),
+    filter: filterReducer(state.filter, action)
+  }
+}
+
+function oldReducer(state = {todos: {}, filter: FILTERS[0], inputBox: ""}, action){
   const {id, text, isChecked, filter} = action
   switch(action.type){
     case 'ADD_TODO':
