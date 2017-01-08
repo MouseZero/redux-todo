@@ -33,10 +33,19 @@ function App({ inputBoxText, todos, filter }){
     <div>
       <input type="text" onChange={textBoxChange} value={inputBoxText}></input>
       <GeneralButton callback={addTodoButton} text="Add Todo" />
-      <ListTodos todos={ visableTodos(todos, filter) } toggleBox={toggleBox}/>
-      <FilterButtons DisplayComponent={GeneralButton}/>
+      <VisableTodos/>
+      <FilterButtons/>
     </div>
   )
+}
+
+class VisableTodos extends Component {
+  render(){
+    const state = store.getState()
+    return(
+      <ListTodos todos={ visableTodos(state.todos, state.filter) } toggleBox={toggleBox}/>
+    )
+  }
 }
 
 function visableTodos(todos, filter){
@@ -87,12 +96,11 @@ class FilterButtons extends Component {
 
   render(){
     const state = store.getState().filter;
-    const { DisplayComponent } = this.props;
 
     return (
       <div>
         {['All', 'Active', 'Done'].map( (elem, index, allTags) =>
-          <DisplayComponent
+          <GeneralButton
             key={index}
             callback={() => store.dispatch({
               type: 'FILTER_TODOS',
