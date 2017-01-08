@@ -9,7 +9,7 @@ function toggleBox(event){
   const oldState = store.getState().todos[event.target.name].isChecked;
   store.dispatch({
     type: 'TOGGLE_BOX',
-    id: event.target.name,
+    id: +event.target.name,
     isChecked: !oldState
   })
 }
@@ -32,9 +32,9 @@ function App({ inputBoxText, todos, filter }){
       <input type="text" onChange={textBoxChange} value={inputBoxText}></input>
       <button onClick={addTodoButton}>Add Todo</button>
       <ListTodos todos={ visableTodos(todos, filter) } toggleBox={toggleBox}/>
-      <FilterButtons 
+      <FilterButtons
         filters={FILTERS}
-        changeFilter={changeFilter} 
+        changeFilter={changeFilter}
         filterId={FILTERS.indexOf(filter)}
       />
     </div>
@@ -55,12 +55,12 @@ function visableTodos(todos, filter){
 function ListTodos({todos, toggleBox}){
   return (
     <ul>
-    {todos.map((todo, index) => 
+    {todos.map((todo, index) =>
       <TodoDisplay
-        key={index} 
-        index={index} 
-        callback={toggleBox} 
-        isChecked={todo.isChecked} 
+        key={index}
+        index={index}
+        callback={toggleBox}
+        isChecked={todo.isChecked}
         text={todo.text}
       />
     )}
@@ -82,11 +82,11 @@ function FilterButtons ({ filters, changeFilter, filterId }){
   return (
     <div>
       {filters.map( (elem, index) =>
-        <FilterButton 
+        <FilterButton
           key={index}
-          index={index} 
-          callback={changeFilter} 
-          text={elem} 
+          index={index}
+          callback={changeFilter}
+          text={elem}
           isActive={index === filterId}
         />
       )}
@@ -161,7 +161,7 @@ store.subscribe(render);
 //-----Render
 function render(){
   ReactDOM.render(
-    <App 
+    <App
       todos={store.getState().todos}
       inputBoxText={store.getState().inputBox}
       filter={store.getState().filter}
