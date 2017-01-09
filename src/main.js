@@ -1,23 +1,13 @@
 const FILTERS = ['All', 'Active', 'Done'];
+const { Provider, connect } = ReactRedux;
 const store = Redux.createStore(reducer)
 const Component = React.Component;
-//store.subscribe(render);
 
 //----React
 function textBoxChangeEvent(store, event){
   store.dispatch({type: 'CHANGE_TODO_INPUT_TEXT', text: event.target.value});
 }
 const textBoxChange = R.curry(textBoxChangeEvent)(store);
-
-function toggleBoxEvent(store, event){
-  const oldState = store.getState().todos[event.target.name].isChecked;
-  store.dispatch({
-    type: 'TOGGLE_BOX',
-    id: +event.target.name,
-    isChecked: !oldState
-  })
-}
-const toggleBox = R.curry(toggleBoxEvent)(store);
 
 function addTodoButtonRaw(store){
   store.dispatch({
@@ -28,6 +18,8 @@ function addTodoButtonRaw(store){
 }
 const addTodoButton = function() { return addTodoButtonRaw(store) }
 
+// App Display
+//////////////////////////////////////////////
 function App(props, {store}){
   return(
     <div>
@@ -38,6 +30,9 @@ function App(props, {store}){
   )
 }
 
+
+// Todo Inputs Display
+//////////////////////////////////////////////
 function TodoInput(){
   return(
     <div>
@@ -50,16 +45,33 @@ TodoInput.contextTypes = {
   store: React.PropTypes.object
 }
 
-function visableTodos(todos, filter){
-  switch(filter){
-    case 'Active':
-      return todos.filter(todo => todo.isChecked);
-    case 'Done':
-      return todos.filter(todo => !todo.isChecked);
-  }
-  return todos;
-}
 
+// Todo Display
+//////////////////////////////////////////////
+function toggleBoxEvent(store, event){
+  const oldState = store.getState().todos[event.target.name].isChecked;
+  store.dispatch({
+    type: 'TOGGLE_BOX',
+    id: +event.target.name,
+    isChecked: !oldState
+  })
+}
+const toggleBox = R.curry(toggleBoxEvent)(store);
+
+const mapStateToProps = (state) => {
+  return {
+    todos: visableTodos(state.todos, state.filter)
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    toggleBox: toggleBox
+  }
+}
+const VisableTodos = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ListTodos);
 
 function ListTodos({todos, toggleBox}){
   return (
@@ -87,29 +99,18 @@ function TodoDisplay({ index, callback, isChecked, text}){
   )
 }
 
-class VisableTodos extends Component {
-  componentDidMount(){
-    const { store } = this.context;
-    this.unsubscribe = store.subscribe(() =>
-      this.forceUpdate()
-    );
+function visableTodos(todos, filter){
+  switch(filter){
+    case 'Active':
+      return todos.filter(todo => todo.isChecked);
+    case 'Done':
+      return todos.filter(todo => !todo.isChecked);
   }
-
-  componentWillUnmount(){
-    this.unsubscribe();
-  }
-
-  render(){
-    const { filter, todos } = this.context.store.getState()
-    return(
-      <ListTodos todos={ visableTodos(todos, filter) } toggleBox={toggleBox}/>
-    )
-  }
-}
-VisableTodos.contextTypes = {
-  store: React.PropTypes.object
+  return todos;
 }
 
+// Filter Display
+//////////////////////////////////////////////
 class FilterButtons extends Component {
   componentDidMount(){
     const { store } = this.context
@@ -204,22 +205,6 @@ function reducer(state = {}, action){
     filter: filterReducer(state.filter, action)
   }
 }
-
-class Provider extends Component{
-  getChildContext(){
-    return {
-      store: this.props.store
-    }
-  }
-
-  render(){
-    return this.props.children;
-  }
-}
-Provider.childContextTypes = {
-  store: React.PropTypes.object
-}
-
 
 //-----Render
 function render(){
