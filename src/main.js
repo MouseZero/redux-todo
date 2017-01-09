@@ -112,6 +112,7 @@ VisableTodos.contextTypes = {
 
 class FilterButtons extends Component {
   componentDidMount(){
+    const { store } = this.context
     this.unsubscribe = store.subscribe(() => this.forceUpdate());
   }
 
@@ -120,7 +121,7 @@ class FilterButtons extends Component {
   }
 
   render(){
-    const state = store.getState().filter;
+    const {state} = this.context.store.getState().filter;
 
     return (
       <div>
@@ -139,6 +140,9 @@ class FilterButtons extends Component {
       </div>
     )
   }
+}
+FilterButtons.contextTypes = {
+  store: React.PropTypes.object
 }
 
 function GeneralButton ({isActive, callback, text}){
