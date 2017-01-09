@@ -41,7 +41,7 @@ function App(props, {store}){
 function TodoInput(){
   return(
     <div>
-      <input type="text" onChange={textBoxChange} value={store.inputBoxText}></input>
+      <input type="text" onChange={textBoxChange} value={store.getState().inputBoxText}></input>
       <GeneralButton callback={addTodoButton} text="Add Todo" />
     </div>
   )
@@ -89,7 +89,10 @@ function TodoDisplay({ index, callback, isChecked, text}){
 
 class VisableTodos extends Component {
   componentDidMount(){
-    this.unsubscribe = store.subscribe(() => this.forceUpdate());
+    const { store } = this.context;
+    this.unsubscribe = store.subscribe(() =>
+      this.forceUpdate()
+    );
   }
 
   componentWillUnmount(){
@@ -97,11 +100,14 @@ class VisableTodos extends Component {
   }
 
   render(){
-    const state = store.getState()
+    const { filter, todos } = this.context.store.getState()
     return(
-      <ListTodos todos={ visableTodos(state.todos, state.filter) } toggleBox={toggleBox}/>
+      <ListTodos todos={ visableTodos(todos, filter) } toggleBox={toggleBox}/>
     )
   }
+}
+VisableTodos.contextTypes = {
+  store: React.PropTypes.object
 }
 
 class FilterButtons extends Component {
@@ -214,7 +220,7 @@ Provider.childContextTypes = {
 //-----Render
 function render(){
   ReactDOM.render(
-    <Provider store={store.getState()}>
+    <Provider store={store}>
       <App
         todos={store.getState().todos}
         inputBoxText={store.getState().inputBox}
