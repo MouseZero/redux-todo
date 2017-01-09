@@ -28,15 +28,18 @@ function addTodoButtonRaw(store){
 }
 const addTodoButton = function() { return addTodoButtonRaw(store) }
 
-function App({ inputBoxText, todos, filter }){
+function App(props, {store}){
   return(
     <div>
-      <input type="text" onChange={textBoxChange} value={inputBoxText}></input>
+      <input type="text" onChange={textBoxChange} value={store.inputBoxText}></input>
       <GeneralButton callback={addTodoButton} text="Add Todo" />
       <VisableTodos/>
       <FilterButtons/>
     </div>
   )
+}
+App.contextTypes = {
+  store: React.PropTypes.object
 }
 
 function visableTodos(todos, filter){
@@ -87,7 +90,6 @@ class VisableTodos extends Component {
 
   render(){
     const state = store.getState()
-    console.log(state);
     return(
       <ListTodos todos={ visableTodos(state.todos, state.filter) } toggleBox={toggleBox}/>
     )
@@ -185,15 +187,32 @@ function reducer(state = {}, action){
   }
 }
 
+class Provider extends Component{
+  getChildContext(){
+    return {
+      store: this.props.store
+    }
+  }
+
+  render(){
+    return this.props.children;
+  }
+}
+Provider.childContextTypes = {
+  store: React.PropTypes.object
+}
+
 
 //-----Render
 function render(){
   ReactDOM.render(
-    <App
-      todos={store.getState().todos}
-      inputBoxText={store.getState().inputBox}
-      filter={store.getState().filter}
-    />,
+    <Provider store={store.getState()}>
+      <App
+        todos={store.getState().todos}
+        inputBoxText={store.getState().inputBox}
+        filter={store.getState().filter}
+      />
+    </Provider>,
     document.getElementById('root')
   );
 }
