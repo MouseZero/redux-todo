@@ -31,14 +31,22 @@ const addTodoButton = function() { return addTodoButtonRaw(store) }
 function App(props, {store}){
   return(
     <div>
-      <input type="text" onChange={textBoxChange} value={store.inputBoxText}></input>
-      <GeneralButton callback={addTodoButton} text="Add Todo" />
+      <TodoInput/>
       <VisableTodos/>
       <FilterButtons/>
     </div>
   )
 }
-App.contextTypes = {
+
+function TodoInput(){
+  return(
+    <div>
+      <input type="text" onChange={textBoxChange} value={store.inputBoxText}></input>
+      <GeneralButton callback={addTodoButton} text="Add Todo" />
+    </div>
+  )
+}
+TodoInput.contextTypes = {
   store: React.PropTypes.object
 }
 
