@@ -4,20 +4,6 @@ const store = Redux.createStore(reducer)
 const Component = React.Component;
 
 //----React
-function textBoxChangeEvent(store, event){
-  store.dispatch({type: 'CHANGE_TODO_INPUT_TEXT', text: event.target.value});
-}
-const textBoxChange = R.curry(textBoxChangeEvent)(store);
-
-function addTodoButtonRaw(store){
-  store.dispatch({
-    type: 'ADD_TODO',
-    text: store.getState().inputBox,
-    isChecked: false
-  });
-}
-const addTodoButton = function() { return addTodoButtonRaw(store) }
-
 // App Display
 //////////////////////////////////////////////
 function App(props, {store}){
@@ -33,18 +19,43 @@ function App(props, {store}){
 
 // Todo Inputs Display
 //////////////////////////////////////////////
-function TodoInput(){
+const mapStateToTodoInputProps = (state) => {
+  return {inputBoxText: state.inputBox};
+};
+const mapDispatchToTodoInputProps = (dispatch) => {
+  return {dispatch};
+};
+const mergeTodoInputProps = (storeProps, dispatchProps, ownProps) => {
+  return Object.assign(
+    {}, storeProps, dispatchProps, ownProps,
+    {
+      textBoxChange: function (event){
+        dispatchProps.dispatch({type: 'CHANGE_TODO_INPUT_TEXT', text: event.target.value})
+      },
+      addTodoButton: function(){
+        dispatchProps.dispatch({
+          type: 'ADD_TODO',
+          text: storeProps.inputBoxText,
+          isChecked: false
+        })
+      }
+    }
+  )
+}
+const TodoInput = connect(
+  mapStateToTodoInputProps,
+  mapDispatchToTodoInputProps,
+  mergeTodoInputProps
+)(TodoInputDisplay)
+
+function TodoInputDisplay({ inputBoxText, textBoxChange, addTodoButton }){
   return(
     <div>
-      <input type="text" onChange={textBoxChange} value={store.getState().inputBoxText}></input>
+      <input type="text" onChange={textBoxChange} value={inputBoxText}></input>
       <GeneralButton callback={addTodoButton} text="Add Todo" />
     </div>
   )
 }
-TodoInput.contextTypes = {
-  store: React.PropTypes.object
-}
-
 
 // Todo Display
 //////////////////////////////////////////////
