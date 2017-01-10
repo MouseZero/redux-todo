@@ -122,44 +122,48 @@ function visableTodos(todos, filter){
 
 // Filter Display
 //////////////////////////////////////////////
-class FilterButtons extends Component {
-  componentDidMount(){
-    const { store } = this.context
-    this.unsubscribe = store.subscribe(() => this.forceUpdate());
-  }
 
-  componentWillUnmount(){
-    this.unsubscribe();
-  }
-
-  render(){
-    const {state} = this.context.store.getState().filter;
-
-    return (
-      <div>
-        {['All', 'Active', 'Done'].map( (elem, index, allTags) =>
-          <GeneralButton
-            key={index}
-            callback={() => store.dispatch({
-              type: 'FILTER_TODOS',
-              filter: allTags[index]
-              })
-            }
-            text={elem}
-            isActive={state === allTags[index]}
-          />
-        )}
-      </div>
-    )
+      // dispatch({
+      //   type: 'FILTER_TODOS',
+      //   filter: event.target.name
+      // })
+const mapStateToFilterButtonProps = (state) => {
+  return {filter: state.filter}
+}
+const mapDispatchToFilterButtonProps = (dispatch) => {
+  return {
+    changeFilter: function(event){
+      dispatch({
+        type: 'FILTER_TODOS',
+        filter: event.target.name
+      })
+    }
   }
 }
-FilterButtons.contextTypes = {
-  store: React.PropTypes.object
-}
+const FilterButtons = connect(
+  mapStateToFilterButtonProps,
+  mapDispatchToFilterButtonProps
+)(FilterButtonsDisplay);
 
-function GeneralButton ({isActive, callback, text}){
+function FilterButtonsDisplay({ filter, changeFilter }){
   return (
-    <button onClick={callback}>
+    <div>
+      {['All', 'Active', 'Done'].map( (elem, index, allTags) =>
+        <GeneralButton
+          key={index}
+          name={allTags[index]}
+          callback={changeFilter}
+          text={elem}
+          isActive={filter === allTags[index]}
+        />
+      )}
+    </div>
+  )
+}
+
+function GeneralButton ({isActive, name, callback, text}){
+  return (
+    <button name={name} onClick={callback}>
       {(isActive) && "--"}
       {text}
       {(isActive) && "--"}
